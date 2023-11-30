@@ -31,61 +31,14 @@ fs = 1000  # Sampling frequency in Hz
 Δt = 1.0 / fs   # Sampling interval
 t1 = 0.0
 t2 = 5.0
-DCM = nothing # trafo matrix: {I} -> {B}
 
 b_SI = 1.0
 V_SI = 10.0
 h_SI = 5.0
 W_20_SI = 15 # wind velocity at 20 ft (≈ 6 m) [m/s] 7.7 light, 15.4 moderate, 23.2 severe
 
-# ==============================================================================
-# Calculations
-# ==============================================================================
-
-kn2ms(x) = x / 1.94384
-ms2kn(x) = x * 1.94384
-
-ft2m(x) = x / 3.28084
-m2ft(x) = 3.28084 * x
-
-ms2fts(x) = 3.28084 * x
-fts2ms(x) = x / 3.28084
-
-rms(x) = sqrt(mean(x.^2))
-
-# Conversion 
-
-b = m2ft(b_SI)
-V = ms2fts(V_SI)
-h = m2ft(h_SI)
-W_20 = ms2fts(W_20_SI)
-
-
-
-if h > 1000.0
-    error("Altitude is above the low-altitude limit of 304.8 m (1000 ft)!")
-end
-
-# Time
-t = Vector(t1:Δt:t2)
-n = length(t)
-
-seed_values = [23341, 23342, 23343, 23344] # MATLAB [23341, 23342, 23343, 23344]
-
-# Input
-Random.seed!(seed_values[1])
-noise_power = π
-noise_multiplier = √noise_power / √Δt
-white_noise_u_OG = reshape(randn(n), 1, n) * noise_multiplier
-Random.seed!(seed_values[2])
-white_noise_v_OG = reshape(randn(n), 1, n) * noise_multiplier
-Random.seed!(seed_values[3])
-white_noise_w_OG = reshape(randn(n), 1, n) * noise_multiplier
-Random.seed!(seed_values[4])
-white_noise_r_OG = reshape(randn(n), 1, n) * noise_multiplier
 
 df_noise = CSV.read(fname_noise, DataFrame)
-
 white_noise_u = df_noise.u
 white_noise_v = df_noise.v
 white_noise_w = df_noise.w
@@ -95,7 +48,7 @@ white_noise_v = reshape(white_noise_v, 1, n)
 white_noise_w = reshape(white_noise_w, 1, n)
 white_noise_r = reshape(white_noise_r, 1, n)
 
-fig, ax = pplt.subplots(figsize = (7, 8), ncols=4, sharex=true, sharey=false)
+fig, ax = pplt.subplots(figsize = (7, 8), ncols=1, nrows=4, sharex=true, sharey=false)
 ax[1].plot(t, white_noise_u_OG[1, :], lw = 1, label = "Julia", color="C0")
 ax[1].plot(t, white_noise_u[1, :], lw = 1, label = "MATLAB", color="C1")
 ax[1].set(xlabel = "t [s]", ylabel = "noise u")
