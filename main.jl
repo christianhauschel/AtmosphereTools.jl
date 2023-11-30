@@ -20,9 +20,12 @@ pplt.close("all")
 # ==============================================================================
 
 
-fname_V_ref = "/mnt/a/Code/10_drones/drone_simulation/dryden_V.csv"
-fname_omega_ref = "/mnt/a/Code/10_drones/drone_simulation/dryden_omega.csv"
-fname_noise = "/mnt/a/Code/10_drones/drone_simulation/noise.csv"
+fname_V_ref = "validation/V.csv"
+fname_omega_ref = "validation/omega.csv"
+fname_noise = "validation/noise.csv"
+
+positive_q = false
+positive_r = true
 
 fs = 1000  # Sampling frequency in Hz
 Δt = 1.0 / fs   # Sampling interval
@@ -73,26 +76,40 @@ seed_values = [23341, 23342, 23343, 23344] # MATLAB [23341, 23342, 23343, 23344]
 Random.seed!(seed_values[1])
 noise_power = π
 noise_multiplier = √noise_power / √Δt
-white_noise_u = reshape(randn(n), 1, n) * noise_multiplier
+white_noise_u_OG = reshape(randn(n), 1, n) * noise_multiplier
 Random.seed!(seed_values[2])
-white_noise_v = reshape(randn(n), 1, n) * noise_multiplier
+white_noise_v_OG = reshape(randn(n), 1, n) * noise_multiplier
 Random.seed!(seed_values[3])
-white_noise_w = reshape(randn(n), 1, n) * noise_multiplier
+white_noise_w_OG = reshape(randn(n), 1, n) * noise_multiplier
 Random.seed!(seed_values[4])
-white_noise_roll = reshape(randn(n), 1, n) * noise_multiplier
+white_noise_r_OG = reshape(randn(n), 1, n) * noise_multiplier
 
-# df_noise = CSV.read(fname_noise, DataFrame)
-# df_noise.t = df_noise.time .- df_noise.time[1]
+df_noise = CSV.read(fname_noise, DataFrame)
 
-# white_noise_u = df_noise[!, "White Noise:1(1)"]
-# white_noise_v = df_noise[!, "White Noise:1(2)"]
-# white_noise_w = df_noise[!, "White Noise:1(3)"]
-# white_noise_roll = df_noise[!, "White Noise:1(4)"]
-# white_noise_u = reshape(white_noise_u, 1, n)
-# white_noise_v = reshape(white_noise_v, 1, n)
-# white_noise_w = reshape(white_noise_w, 1, n)
-white_noise_roll = reshape(white_noise_roll, 1, n)
+white_noise_u = df_noise.u
+white_noise_v = df_noise.v
+white_noise_w = df_noise.w
+white_noise_r = df_noise.r
+white_noise_u = reshape(white_noise_u, 1, n)
+white_noise_v = reshape(white_noise_v, 1, n)
+white_noise_w = reshape(white_noise_w, 1, n)
+white_noise_r = reshape(white_noise_r, 1, n)
 
+fig, ax = pplt.subplots(figsize = (7, 8), ncols=4, sharex=true, sharey=false)
+ax[1].plot(t, white_noise_u_OG[1, :], lw = 1, label = "Julia", color="C0")
+ax[1].plot(t, white_noise_u[1, :], lw = 1, label = "MATLAB", color="C1")
+ax[1].set(xlabel = "t [s]", ylabel = "noise u")
+ax[2].plot(t, white_noise_v_OG[1, :], lw = 1, label = "Julia", color="C0")
+ax[2].plot(t, white_noise_v[1, :], lw = 1, label = "MATLAB", color="C1")
+ax[2].set(xlabel = "t [s]", ylabel = "noise v")
+ax[3].plot(t, white_noise_w_OG[1, :], lw = 1, label = "Julia", color="C0")
+ax[3].plot(t, white_noise_w[1, :], lw = 1, label = "MATLAB", color="C1")
+ax[3].set(xlabel = "t [s]", ylabel = "noise w")
+ax[4].plot(t, white_noise_r_OG[1, :], lw = 1, label = "Julia", color="C0")
+ax[4].plot(t, white_noise_r[1, :], lw = 1, label = "MATLAB", color="C1")
+ax[4].set(xlabel = "t [s]", ylabel = "noise r")
+ax[1].legend(ncols = 1)
+fig
 
 # Low-altitude model (< 1000 ft)
 L_w = h
@@ -121,17 +138,25 @@ H_w = tf(σ_w * sqrt(L_w / π / V) .* [sqrt(3) * L_w / V, 1], [(L_w / V)^2, 2 * 
 # -------------------------------------
 
 # Longitudinal
-H_p = tf(σ_w * sqrt(0.8 / V) * [(π / (4b))^(1 / 6)], L_w^(1 / 3) * [1, 4b / (π * V)])
+H_p = tf(σ_w * sqrt(0.8 / V) * [(π / (4b))^(1 / 6)], L_w^(1 / 3) * [4b / (π * V), 1])
 
-Random.seed!(seed_values[4])
-random_vector = rand([-1, 1], n)
 
 # Lateral
-H_r = tf([0.0, -1 / V], [1.0, 3 * b / (π * V)]) * H_v
+if positive_r
+    multiplier_r = 1.0
+else
+    multiplier_r = -1.0
+end
+H_r = tf([multiplier_r / V, 0.0], [3 * b / (π * V), 1.0]) #* H_v
 
 
 # Vertical
-H_q = tf([0.0, +1 / V], [1.0, 4 * b / (π * V)]) * H_w
+if positive_q
+    multiplier_q = 1.0
+else
+    multiplier_q = -1.0
+end
+H_q = tf([multiplier_q / V, 0.0], [4 * b / (π * V), 1.0]) #* H_w
 
 
 
@@ -160,53 +185,21 @@ q_ref = df_omega.q
 r_ref = df_omega.r
 
 
-# fig1, ax = pplt.subplots(figsize = (7, 3))
-# ax[1].plot(t_u, u_SI, lw = 1, label = "u", color="C0")
-# ax[1].plot(t_v, v_SI, lw = 1, label = "v", color="C1")
-# ax[1].plot(t_w, w_SI, lw = 1, label = "w", color="C2")
-# ax[1].plot(t_ref, u_ref, lw = 1, label = "u ref", color="C0", alpha=0.5)
-# ax[1].plot(t_ref, v_ref, lw = 1, label = "v ref", color="C1", alpha=0.5)
-# ax[1].plot(t_ref, w_ref, lw = 1, label = "w ref", color="C2", alpha=0.5)
-# ax[1].set(xlabel = "t [s]", ylabel = "u, v, w [m/s]", title = "Dryden")
-# ax[1].legend(ncols = 2)
-# fig1
-
-# function calc_Xss(u, fs)
-#     X = fft(u)
-#     N = length(u)
-#     n_freq = div(N, 2) + 1
-#     f_nyquist = fs / 2.0
-#     f = LinRange(0, f_nyquist, n_freq)
-#     Δf = f[2] - f[1]
-
-#     X_ss = X[1:div(N, 2)+1]
-#     X_ss *= 2
-#     X_ss[1] = X_ss[1] / 2.0
-#     return X_ss, f
-# end
-
-# U_ss, f = calc_Xss(u, fs)
-# U_ss_ref, f_ref = calc_Xss(u_ref, 1.0)
+fig1, ax = pplt.subplots(figsize = (7, 3))
+ax[1].plot(t_u, u_SI, lw = 1, label = "u", color="C0")
+ax[1].plot(t_v, v_SI, lw = 1, label = "v", color="C1")
+ax[1].plot(t_w, w_SI, lw = 1, label = "w", color="C2")
+ax[1].plot(t_ref, u_ref, lw = 1, label = "u ref", color="C0", alpha=0.5)
+ax[1].plot(t_ref, v_ref, lw = 1, label = "v ref", color="C1", alpha=0.5)
+ax[1].plot(t_ref, w_ref, lw = 1, label = "w ref", color="C2", alpha=0.5)
+ax[1].set(xlabel = "t [s]", ylabel = "u, v, w [m/s]", title = "Dryden")
+ax[1].legend(ncols = 2)
+fig1
 
 
-# fig, ax = pplt.subplots(figsize = (7, 3))
-# ax[1].plot(f, abs.(U_ss)/length(u), lw = 1, label = "u", color="C0")
-# ax[1].plot(f_ref, abs.(U_ss_ref)/length(u_ref), lw = 1, label = "u ref", color="C0", alpha=0.5)
-# ax[1].set(
-#     xlabel = "f [Hz]",
-#     ylabel = "U [m/s]",
-#     xscale = "log",
-#     # yscale = "log",
-#     # xlim = (0.1, 100),
-#     # ylim = (1e-4, 1e-1),
-
-# )
-# fig
-
-
-p, t_p, _, _ = lsim(H_p, white_noise_roll, t)
-r, t_r, _, _ = lsim(H_r, white_noise_roll, t)
-q, t_q, _, _ = lsim(H_q, white_noise_roll, t)
+p, t_p, _, _ = lsim(H_p, white_noise_r, t)
+r, t_r, _, _ = lsim(H_r, reshape(v, 1, n), t)
+q, t_q, _, _ = lsim(H_q, reshape(w, 1, n), t)
 
 p = vec(p)
 r = vec(r)
@@ -217,11 +210,11 @@ q = vec(q)
 
 fig2, ax = pplt.subplots(figsize=(7, 3))
 ax[1].plot(t_p, p, lw=1, label="p", color="C0")
-# ax[1].plot(t_r, r, lw=1, label="r", color="C1)
-# ax[1].plot(t_q, q, lw=1, label="q", color="C2)
-ax[1].plot(t_ref, p_ref, lw=1, label="p ref", alpha=0.5, color="C0")
-# ax[1].plot(t_ref, r_ref, lw=1, label="r ref", alpha=0.5, color="C1)
-# ax[1].plot(t_ref, q_ref, lw=1, label="q ref", alpha=0.5, color="C2)
+ax[1].plot(t_r, r, lw=1, label="r", color="C1")
+ax[1].plot(t_q, q, lw=1, label="q", color="C2")
+ax[1].plot(t_ref, p_ref, lw=1, label="p ref", color="C0", ls="--", alpha=0.5)
+ax[1].plot(t_ref, r_ref, lw=1, label="r ref", color="C1", ls="--", alpha=0.5)
+ax[1].plot(t_ref, q_ref, lw=1, label="q ref", color="C2", ls="--", alpha=0.5)
 ax[1].set(
     xlabel="t [s]",
     ylabel="p, r, q [rad/s]",
