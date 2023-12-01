@@ -2,6 +2,7 @@ using Random
 using ControlSystems
 using Statistics
 
+
 """
     dryden(t, h_SI, V_SI;
         W_20_SI=15,
@@ -15,8 +16,8 @@ Simulate the Dryden gust model according to MIL-F-8785C [1].
 
 # Arguments
 - `t::Vector`: Time vector
-- `h::Vector`: Altitude [m]
-- `V::Vector`: Airspeed [m/s]
+- `h::Number`: Altitude [m]
+- `V::Number`: Airspeed [m/s]
 - `W6`: Wind velocity at 20 ft (≈ 6 m) [m/s] 7.7 light, 15.4 moderate, 23.2 severe
 - `positive_q`: Set to `true` if positive q is desired
 - `positive_r`: Set to `true` if positive r is desired
@@ -32,8 +33,8 @@ Simulate the Dryden gust model according to MIL-F-8785C [1].
 """
 function dryden(
     t::Vector,
-    h::Vector,
-    V::Vector;
+    h::Number,
+    V::Number;
     W6=15.0,
     positive_q::Bool=true,
     positive_r::Bool=true,
@@ -41,10 +42,11 @@ function dryden(
     seeds::Vector{Int}=[23341, 23342, 23343, 23344],
 )
     n = length(t)
-    white_noise_u = _whiteNoise(n, noise_power=π, seed=seeds[1])
-    white_noise_v = _whiteNoise(n, noise_power=π, seed=seeds[2])
-    white_noise_w = _whiteNoise(n, noise_power=π, seed=seeds[3])
-    white_noise_r = _whiteNoise(n, noise_power=π, seed=seeds[4])
+    Δt = t[2] - t[1]
+    white_noise_u = _whiteNoise(n, Δt, noise_power=π, seed=seeds[1])
+    white_noise_v = _whiteNoise(n, Δt, noise_power=π, seed=seeds[2])
+    white_noise_w = _whiteNoise(n, Δt, noise_power=π, seed=seeds[3])
+    white_noise_r = _whiteNoise(n, Δt, noise_power=π, seed=seeds[4])
 
     return _dryden(
         t, h, V,
@@ -57,7 +59,7 @@ function dryden(
 
 end
 
-function _whiteNoise(n; noise_power=π, seed=23341)
+function _whiteNoise(n, Δt; noise_power=π, seed=23341)
     Random.seed!(seed)
     noise_multiplier = √noise_power / √Δt
     return randn(n) * noise_multiplier
@@ -116,6 +118,7 @@ function _dryden(
     # Vertical
     H_w = tf(σ_w * sqrt(L_w / π / V) .* [sqrt(3) * L_w / V, 1], [(L_w / V)^2, 2 * L_w / V, 1])
 
+
     # -------------------------------------
     # Angular rates
     # -------------------------------------
@@ -167,6 +170,5 @@ function _dryden(
     r = vec(r)
     q = vec(q)
 
-    return hcat(u_SI, v_SI, w_SI), hcat(p, q, r)
-
+    return u_SI, v_SI, w_SI, p, q, r
 end

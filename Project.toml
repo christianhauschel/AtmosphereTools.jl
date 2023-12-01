@@ -4,12 +4,16 @@ authors = ["Christian <hacs@zhaw.ch>"]
 version = "0.1.0"
 
 [deps]
-AcousticAnalysis = "5e7059e8-ff5b-476b-83d5-d22b4578ca22"
 CSV = "336ed68f-0bac-5ca0-87d4-7b16caf5d00b"
 ControlSystems = "a6e380b2-a6ca-5380-bf3e-84a91bcd477e"
+DSP = "717857b8-e6f2-59f4-9121-6e50c889abd2"
 DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+DataInterpolations = "82cc6244-b520-54b8-b5a6-8a565e85f1d0"
+DifferentialEquations = "0c46a032-eb83-5123-abaf-570d42b7fbaa"
 FFTW = "7a1cc6ca-52ef-59f5-83cd-3a7055c09341"
-FLOWNoise = "d27480ee-285d-533b-ae3d-5018956ae0bc"
+Gradient = "1d3ddce8-b809-48e5-8697-14f5083f69b2"
+Interpolations = "a98d9a8b-a2ab-59e6-89dd-64a1c18fca59"
 PyCall = "438e738f-606a-5dbb-bf0a-cddfbfd45ab0"
 PyPlot = "d330b81b-6aea-500a-939a-2ce795aea3ee"
 Random = "9a3f8284-a2c9-5f02-9a11-845980a1fd5c"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
