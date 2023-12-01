@@ -67,15 +67,15 @@ u, v, w, p, q, r = dryden(
 
 
 
-fig1, ax = pplt.subplots(figsize = (7, 3))
-ax[1].plot(t_u, u, lw = 1, label = "u", color="C0")
-ax[1].plot(t_v, v, lw = 1, label = "v", color="C1")
-ax[1].plot(t_w, w, lw = 1, label = "w", color="C2")
+fig1, ax = pplt.subplots(figsize=(7, 3))
+ax[1].plot(t_u, u, lw=1, label="u", color="C0")
+ax[1].plot(t_v, v, lw=1, label="v", color="C1")
+ax[1].plot(t_w, w, lw=1, label="w", color="C2")
 # ax[1].plot(t_ref, u_ref, lw = 1, label = "u ref", color="C0", alpha=0.5)
 # ax[1].plot(t_ref, v_ref, lw = 1, label = "v ref", color="C1", alpha=0.5)
 # ax[1].plot(t_ref, w_ref, lw = 1, label = "w ref", color="C2", alpha=0.5)
-ax[1].set(xlabel = "t [s]", ylabel = "u, v, w [m/s]", title = "Dryden")
-ax[1].legend(ncols = 2)
+ax[1].set(xlabel="t [s]", ylabel="u, v, w [m/s]", title="Dryden")
+ax[1].legend(ncols=2)
 fig1
 
 
@@ -93,3 +93,6 @@ ax[1].set(
 )
 ax[1].legend(ncols=1)
 fig2
+
+# fig1.savefig("validation/dryden_uvw.png", dpi=300)
+# fig2.savefig("validation/dryden_prq.png", dpi=300)
