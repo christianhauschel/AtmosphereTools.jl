@@ -75,6 +75,14 @@ vector `h`, and velocity vector `V`.
     intensity (light turbulence: 7.72 m/s, moderate: 15.4 m/s, severe: 23.2 m/s)
 - `wingspan::Float64`: Aircraft wingspan (m)
 - `seeds::Vector{Int}`: Random number generator seeds for input noise
+
+# Returns 
+- `u::Vector`: u velocity (m/s)
+- `v::Vector`: v velocity (m/s)
+- `w::Vector`: w velocity (m/s)
+- `p::Vector`: p angular velocity (rad/s)
+- `q::Vector`: q angular velocity (rad/s)
+- `r::Vector`: r angular velocity (rad/s)
 """
 function _dryden(
     t::Vector,
