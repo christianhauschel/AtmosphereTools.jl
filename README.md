@@ -8,6 +8,8 @@
 - [ ] Implement medium and high altitudes
 
 
+## Validation with MATLAB
+
 <img src="validation/dryden_uvw.png" width=650px></img>
 
 <img src="validation/dryden_prq.png" width=650px></img>
