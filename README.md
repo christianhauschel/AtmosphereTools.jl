@@ -1,7 +1,12 @@
-# Dryden Atmospheric Wind Turbulence Model
+# Atmospheric Wind Turbulence Model
 
 - Implementation of the simplified Dryden wind turbulence model "MIL STD model" in [1].
-- Warning: Only implemented for low altitude
+- **Warning:** Only implemented for low altitude
+
+## ToDo
+
+- [ ] Implement medium and high altitudes
+
 
 <img src="validation/dryden_uvw.png" width=650px></img>
 
