@@ -54,6 +54,12 @@ u, v, w, p, q, r = _dryden(
     wingspan=b,
 )
 
+u_test, v_test, w_test, p_test, q_test, r_test = dryden(
+    t, h, V,;
+    velocity_6m=velocity_6m,
+    wingspan=b,
+)
+
 
 fig1, ax = pplt.subplots(figsize=(7, 3))
 ax[1].plot(t, u, lw=1, label="u", color="C0")
@@ -83,3 +89,23 @@ fig2
 
 fig1.savefig("validation/dryden_uvw.png", dpi=300)
 fig2.savefig("validation/dryden_prq.png", dpi=300)
+
+
+fig3, ax = pplt.subplots(figsize=(7, 3))
+ax[1].plot(t, u_test, lw=1, label="u", color="C0")
+ax[1].plot(t, v_test, lw=1, label="v", color="C1")
+ax[1].plot(t, w_test, lw=1, label="w", color="C2")
+ax[1].set(xlabel="t [s]", ylabel="u, v, w [m/s]", title="Dryden")
+ax[1].legend(ncols=3)
+fig3
+
+fig4, ax = pplt.subplots(figsize=(7, 3))
+ax[1].plot(t, p_test, lw=1, label="p", color="C0")
+ax[1].plot(t, r_test, lw=1, label="r", color="C1")
+ax[1].plot(t, q_test, lw=1, label="q", color="C2")
+ax[1].set(
+    xlabel="t [s]",
+    ylabel="p, r, q [rad/s]",
+)
+ax[1].legend(ncols=3)
+fig4

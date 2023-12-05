@@ -5,7 +5,7 @@
 
 ## ToDo
 
-- [ ] Implement medium and high altitudes
+- [ ] Implement medium and high altitudes (see [2])
 
 
 ## Validation with MATLAB
@@ -18,3 +18,4 @@
 ## References
 
 1. J. Yeager, “Implementation and Testing of Turbulence Models for the F18-HARV Simulation,” NASA, Hampton, VA, NASA Contractor Report 206937, 1998.
+2. D. Moorhouse and R. Woodcock, “MIL-F-878SC. United States Military Specification: Flying Qualities of Piloted Airplanes,” US Department of Defense, Washington, DC, USA, 1980.

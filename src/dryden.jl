@@ -1,10 +1,32 @@
 using Random
 
+
+"""
+    dryden(t::Vector, h::Vector, V::Vector;
+        velocity_6m=15.0,
+        wingspan=1.0,
+        seeds::Vector{Int}=[23341, 23342, 23343, 23344],
+    )
+
+Generate a dryden turbulence model for the given time vector `t`, altitude 
+vector `h`, and velocity vector `V`.
+
+# Arguments
+- `t::Vector`: Time vector (s)
+- `h::Vector`: Altitude vector (m)
+- `V::Vector`: Aircraft velocity vector (m/s)
+
+# Optional Arguments
+- `velocity_6m::Float64`: Velocity at 6 m altitude (m/s), this sets the turbulenc 
+    intensity (light turbulence: 7.72 m/s, moderate: 15.4 m/s, severe: 23.2 m/s)
+- `wingspan::Float64`: Aircraft wingspan (m)
+- `seeds::Vector{Int}`: Random number generator seeds for input noise
+"""
 function dryden(
     t::Vector,
     h::Vector,
     V::Vector;
-    velocity_6m=15.0,
+    velocity_6m=15.4,
     wingspan=1.0,
     seeds::Vector{Int}=[23341, 23342, 23343, 23344],
 )
@@ -28,7 +50,32 @@ function dryden(
     )
 end
 
+"""
+    _dryden(t::Vector, h::Vector, V::Vector
+        noise_u::Vector, noise_v::Vector, noise_w::Vector, noise_p::Vector;
+        velocity_6m=15.0,
+        wingspan=1.0,
+        seeds::Vector{Int}=[23341, 23342, 23343, 23344],
+    )
 
+Generate a dryden turbulence model for the given time vector `t`, altitude 
+vector `h`, and velocity vector `V`.
+
+# Arguments
+- `t::Vector`: Time vector (s)
+- `h::Vector`: Altitude vector (m)
+- `V::Vector`: Aircraft velocity vector (m/s)
+- `noise_u::Vector`: White noise input for u (m/s)
+- `noise_v::Vector`: White noise input for v (m/s)
+- `noise_w::Vector`: White noise input for w (m/s)
+- `noise_p::Vector`: White noise input for p (rad/s)
+
+# Optional Arguments
+- `velocity_6m::Float64`: Velocity at 6 m altitude (m/s), this sets the turbulenc 
+    intensity (light turbulence: 7.72 m/s, moderate: 15.4 m/s, severe: 23.2 m/s)
+- `wingspan::Float64`: Aircraft wingspan (m)
+- `seeds::Vector{Int}`: Random number generator seeds for input noise
+"""
 function _dryden(
     t::Vector,
     h_SI::Vector,
@@ -39,7 +86,7 @@ function _dryden(
     noise_p::Vector;
     velocity_6m=15,
     wingspan=1.0,
-)   
+)
     n = length(t)
     unit = ones(n)
 
