@@ -1,18 +1,31 @@
-# Atmospheric Wind Turbulence Model
+# AtmosphereTools
+
+Different tools for the atmosphere and wind to model the following:
+- wind disturbances
+- wind shear
+
+## Wind Turbulence Model
 
 - Implementation of the simplified Dryden wind turbulence model "MIL STD model" in [1].
 - **Warning:** Only implemented for low altitude
 
-## ToDo
+### ToDo
 
 - [ ] Implement medium and high altitudes (see [2])
 
 
-## Validation with MATLAB
+### Validation with MATLAB
 
-<img src="validation/dryden_uvw.png" width=650px></img>
+<img src="doc/img/dryden_uvw.png" width=650px></img>
 
-<img src="validation/dryden_prq.png" width=650px></img>
+<img src="doc/img/dryden_prq.png" width=650px></img>
+
+## Wind Shear Model
+
+- Low altitudes wind shear model according to [2]
+
+<img src="doc/img/shear.png" width=650px></img>
+
 
 
 ## References

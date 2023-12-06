@@ -109,3 +109,5 @@ ax[1].set(
 )
 ax[1].legend(ncols=3)
 fig4
+
+fig3
