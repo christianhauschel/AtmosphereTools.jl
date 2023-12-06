@@ -1,6 +1,6 @@
 using PyPlot, PyCall
 using DataFrames, CSV
-using WindTurbulence: dryden, _dryden
+using AtmosphereTools: dryden, _dryden
 pplt = pyimport("proplot")
 pplt.close("all")
 
