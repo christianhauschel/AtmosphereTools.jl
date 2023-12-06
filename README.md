@@ -22,7 +22,7 @@ Different tools for the atmosphere and wind to model the following:
 
 ## Wind Shear Model
 
-- Low altitudes wind shear model according to [2]
+- Low-altitude wind shear model according to [2]
 
 <img src="doc/img/shear.png" width=650px></img>
 
