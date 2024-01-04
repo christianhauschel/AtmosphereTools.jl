@@ -61,9 +61,9 @@ function shear(altitude, V_wind_at6m; flight_phase = "C")
     if any(h > 1000.0)
         error("Altitude is above the low-altitude limit of 304.8 m (1000 ft)!")
     end
-    if any(h < 3)
-        println("WARNING: Altitude is below the low-altitude limit of 3 m (10 ft)!")
-    end
+    # if any(h < 3)
+    #     println("WARNING: Altitude is below the low-altitude limit of 3 m (10 ft)!")
+    # end
 
     if flight_phase == "C"
         z0 = 0.15
