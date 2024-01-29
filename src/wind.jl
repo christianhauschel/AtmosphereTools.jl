@@ -53,7 +53,7 @@ Calculate the wind shear from conditions measured at a height of 6 m (20 ft) abo
 1. https://ch.mathworks.com/help/aeroblks/windshearmodel.html
 2. U.S. Military Specification MIL-F-8785C, November 5, 1980.
 """
-function shear(altitude, V_wind_at6m; flight_phase = "C")
+function shear(altitude::Number, V_wind_at6m::Number; flight_phase::String = "C", show_warnings::Bool=false)
 
     W20 = ms2fts(V_wind_at6m)
     h = m2ft(altitude)
@@ -61,14 +61,25 @@ function shear(altitude, V_wind_at6m; flight_phase = "C")
     if any(h > 1000.0)
         error("Altitude is above the low-altitude limit of 304.8 m (1000 ft)!")
     end
-    # if any(h < 3)
-    #     println("WARNING: Altitude is below the low-altitude limit of 3 m (10 ft)!")
-    # end
+
+    if show_warnings
+        if any(h < 3)
+            println("WARNING: Altitude is below the low-altitude limit of 3 ft (0.91 m)!")
+        end
+    end
+
+
 
     if flight_phase == "C"
         z0 = 0.15
     else
         z0 = 2.0
+    end
+
+    
+
+    if h < 3
+        h = 3
     end
 
     u_w = W20 * log(h / z0) / log(20/z0)

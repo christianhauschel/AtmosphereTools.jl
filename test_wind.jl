@@ -6,16 +6,16 @@ pplt.close("all")
 
 shear(300, 10)
 
-h = 0:10:300
+h = 0:0.1:30
 fig, ax = pplt.subplots(figsize=(6,5))
-ax[1].plot(shear.(h, 7), h, label="7 m/s")
-ax[1].plot(shear.(h, 15), h, label="15 m/s")
-ax[1].plot(shear.(h, 30), h, label="30 m/s")
+ax[1].plot(h, shear.(h, 7), label="7 m/s")
+ax[1].plot(h, shear.(h, 15), label="15 m/s")
+ax[1].plot(h, shear.(h, 30), label="30 m/s")
 ax[1].legend()
 ax[1].format(
-    ylabel="Altitude [m]",
-    xlabel="Wind speed [m/s]",
+    xlabel="Altitude [m]",
+    ylabel="Wind speed [m/s]",
     title="Wind shear (MIL-F-8785C)",
 )
 fig 
-fig.savefig("doc/img/shear.png", dpi=300)
+# fig.savefig("doc/img/shear.png", dpi=300)
