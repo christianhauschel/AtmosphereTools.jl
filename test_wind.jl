@@ -18,4 +18,4 @@ ax[1].format(
     title="Wind shear (MIL-F-8785C)",
 )
 fig 
-# fig.savefig("doc/img/shear.png", dpi=300)
+fig.savefig("doc/img/shear.png", dpi=300)
