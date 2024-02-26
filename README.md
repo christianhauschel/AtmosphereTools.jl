@@ -1,4 +1,4 @@
-# AtmosphereTools
+# AtmosphereTools.jl
 
 Different tools for the atmosphere and wind to model the following:
 - wind disturbances
@@ -32,3 +32,7 @@ Different tools for the atmosphere and wind to model the following:
 
 1. J. Yeager, “Implementation and Testing of Turbulence Models for the F18-HARV Simulation,” NASA, Hampton, VA, NASA Contractor Report 206937, 1998.
 2. D. Moorhouse and R. Woodcock, “MIL-F-878SC. United States Military Specification: Flying Qualities of Piloted Airplanes,” US Department of Defense, Washington, DC, USA, 1980.
+
+## License 
+
+This code is licensed under MIT.
